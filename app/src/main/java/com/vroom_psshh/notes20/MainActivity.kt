@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vroom_psshh.notes20.databinding.ActivityMainBinding
-import com.vroom_psshh.notes20.roomDB.UserInput
 import com.vroom_psshh.notes20.viewmodels.MainViewModel
 import com.vroom_psshh.notes20.viewmodels.MainViewModelFactory
 
