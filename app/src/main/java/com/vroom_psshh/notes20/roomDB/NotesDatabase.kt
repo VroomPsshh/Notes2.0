@@ -19,7 +19,7 @@ abstract class NotesDatabase: RoomDatabase() {
                         .build()
                 }
             }
-            return INSTANCE!!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+            return INSTANCE!!
         }
     }
 

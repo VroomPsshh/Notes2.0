@@ -17,9 +17,16 @@ class NotesRepository(private val notesDatabase: NotesDatabase) {
         get() = notesLiveData*/
     //
 
-    fun getNotes():LiveData<List<UserInput>> = notesDatabase.notesDao().getNotes()
-
     fun addNotes(userInput: List<UserInput>){
         notesDatabase.notesDao().addNotes(userInput)
+    }
+
+    fun getNotes():LiveData<List<UserInput>> = notesDatabase.notesDao().getNotes()
+
+    fun updateNotes(userInput: List<UserInput>){
+        notesDatabase.notesDao().updateNotes(userInput)
+    }
+    fun deleteNotes(userInput: List<UserInput>){
+        notesDatabase.notesDao().deleteNotes(userInput)
     }
 }

@@ -1,6 +1,7 @@
 package com.vroom_psshh.notes20
 
 import android.os.Bundle
+import android.text.Editable
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.vroom_psshh.notes20.databinding.FragmentNotesAddingBinding
-import com.vroom_psshh.notes20.databinding.NotesEntryListBinding
 import com.vroom_psshh.notes20.roomDB.UserInput
 import com.vroom_psshh.notes20.viewmodels.MainViewModel
 
@@ -27,10 +27,22 @@ class NotesAddingFrag : Fragment() {
         val binding: FragmentNotesAddingBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_notes_adding, container, false)
 
+        //fetching data from bundle and setting it
+        val receivedData = arguments
+        if (receivedData != null) {
+            val title = receivedData.getString("title")
+            val userInput = receivedData.getString("userInput")
+            val editableTitle = title?.toEditable()
+            val editableUserInput = userInput?.toEditable()
+            binding.title.text = editableTitle
+            binding.notes.text = editableUserInput
+
+        }
+
         //editText movement, scrollbar controller
         binding.notes.movementMethod = ScrollingMovementMethod.getInstance()
 
-        binding.saveButton.setOnClickListener{
+        binding.saveButton.setOnClickListener {
             val title = binding.title.text.toString().trim()
             val notes = binding.notes.text.toString().trim()
             val userInput = UserInput(0, title, notes)
@@ -40,4 +52,7 @@ class NotesAddingFrag : Fragment() {
 
         return binding.root
     }
+
+    private fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+
 }
