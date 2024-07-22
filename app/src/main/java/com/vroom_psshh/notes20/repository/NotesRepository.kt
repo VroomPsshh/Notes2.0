@@ -1,7 +1,6 @@
 package com.vroom_psshh.notes20.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.vroom_psshh.notes20.roomDB.NotesDatabase
 import com.vroom_psshh.notes20.roomDB.UserInput
 
@@ -23,7 +22,7 @@ class NotesRepository(private val notesDatabase: NotesDatabase) {
 
     fun getNotes():LiveData<List<UserInput>> = notesDatabase.notesDao().getNotes()
 
-    fun updateNotes(userInput: List<UserInput>){
+    fun updateNotes(userInput: UserInput) {
         notesDatabase.notesDao().updateNotes(userInput)
     }
     fun deleteNotes(userInput: List<UserInput>){

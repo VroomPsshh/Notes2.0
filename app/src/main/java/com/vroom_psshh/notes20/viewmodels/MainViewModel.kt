@@ -1,7 +1,6 @@
 package com.vroom_psshh.notes20.viewmodels
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vroom_psshh.notes20.repository.NotesRepository
@@ -18,7 +17,7 @@ class MainViewModel (private val repository: NotesRepository): ViewModel() {
     }
     fun updateNotes(userInput: UserInput){
         viewModelScope.launch(Dispatchers.IO){
-            repository.updateNotes(listOf(userInput))
+            repository.updateNotes(userInput)
         }
     }
     val notesLiveData: LiveData<List<UserInput>> = repository.getNotes()

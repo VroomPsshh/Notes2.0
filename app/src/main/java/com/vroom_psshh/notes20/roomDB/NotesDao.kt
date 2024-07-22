@@ -17,8 +17,8 @@ interface NotesDao {
     @Query("SELECT * FROM notes")
     fun getNotes(): LiveData<List<UserInput>>
 
-    @Update
-    fun updateNotes(notes: List<UserInput>)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateNotes(notes: UserInput)
 
     @Delete
     fun deleteNotes(notes: List<UserInput>)

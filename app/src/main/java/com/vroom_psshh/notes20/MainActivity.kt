@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
     private lateinit var userInputAdapter: UserInputAdapter
+    private  var userID: Int = 0
     private lateinit var title: String
     private lateinit var userInput: String
 
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
                 userInputAdapter.updateNotes(values)
                 val listSize = userInputAdapter.itemCount
                 if (listSize != 0) {
-                    Log.d("App Status", "App running finee!")
+                    Log.d("App Status", "Changes made in data.")
                 } else {
                     Toast.makeText(
                         this,
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
         } else{
             val frag = NotesAddingFrag()
             val bundle = Bundle()
+            bundle.putInt("notesId", userID)
             bundle.putString("title", title)
             bundle.putString("userInput", userInput)
             frag.arguments = bundle
@@ -99,6 +101,7 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
         mainViewModel.notesLiveData.observe(this) { values ->
             if (values != null) {
                 val dataAtThisPosition = values[position]
+                userID = dataAtThisPosition.notesId
                 title = dataAtThisPosition.title
                 userInput = dataAtThisPosition.userInput
                 loadFragment(1)
