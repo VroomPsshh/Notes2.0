@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,6 @@ import com.vroom_psshh.notes20.viewmodels.MainViewModel
 
 
 class NotesAddingFrag : Fragment() {
-
     private val mainViewModel: MainViewModel by activityViewModels()
     private var notesId:Int = 0
     private lateinit var title: String
@@ -61,10 +61,11 @@ class NotesAddingFrag : Fragment() {
                     newUserInput = binding.notes.text.toString().trim()
                     val userInput = UserInput(0, newTitle, newUserInput)
                     mainViewModel.addNotes(userInput)
-                    Toast.makeText(requireContext(), "Notes Saved!!", Toast.LENGTH_SHORT).show()
+                    Log.d("1. Note Added", userInput.toString())
+                    Toast.makeText(requireContext(), "Notes Saved Successfully!!", Toast.LENGTH_SHORT).show()
                 }
             }
-            //Update new notes using this logic
+            //Update notes using this logic
         } else {
             binding.saveButton.text = "Update"
             binding.saveButton.setOnClickListener {
@@ -77,6 +78,7 @@ class NotesAddingFrag : Fragment() {
                         userInput = newUserInput
                     )
                     mainViewModel.updateNotes(userInput)
+                    Log.d("1. Edited Note Data", userInput.toString())
                     Toast.makeText(requireContext(), "Notes Updated!!", Toast.LENGTH_SHORT).show()
                 } else Toast.makeText(
                     requireContext(),

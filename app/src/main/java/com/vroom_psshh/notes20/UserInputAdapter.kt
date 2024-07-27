@@ -2,16 +2,20 @@ package com.vroom_psshh.notes20
 
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.vroom_psshh.notes20.databinding.NotesEntryListBinding
 import com.vroom_psshh.notes20.roomDB.UserInput
 import com.vroom_psshh.notes20.viewmodels.DialogActionListener
 
-class UserInputAdapter(private val context: Context, private var entryList: List<UserInput>, private val dialogActionListener:DialogActionListener) :
+class UserInputAdapter(
+    private val context: Context,
+    private var entryList: List<UserInput>,
+    private val dialogActionListener: DialogActionListener
+) :
     RecyclerView.Adapter<UserInputAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,9 +32,15 @@ class UserInputAdapter(private val context: Context, private var entryList: List
         return entryList.size
     }
 
-    fun updateNotes(notes: List<UserInput>) {
+    fun syncNotes(notes: List<UserInput>) {
         this.entryList = notes
+        Log.d("3. UserInputAdapter", "SyncNotes Size = ${entryList.size}, New Data = $entryList")
         notifyDataSetChanged()
+    }
+
+    fun getNotesAt(position: Int): UserInput {
+        Log.d("DataToDelete", "${entryList[position]}")
+        return entryList[position]
     }
 
     inner class ViewHolder(private var binding: NotesEntryListBinding) :
@@ -46,15 +56,15 @@ class UserInputAdapter(private val context: Context, private var entryList: List
             val optionDelete = dialog.findViewById<TextView>(R.id.optionDelete)
             val optionShare = dialog.findViewById<TextView>(R.id.optionShare)
             binding.notesCard.setOnLongClickListener {
-                optionEdit.setOnClickListener{
+                optionEdit.setOnClickListener {
                     dialogActionListener.onEdit(position)
                     dialog.dismiss()
                 }
-                optionDelete.setOnClickListener{
+                optionDelete.setOnClickListener {
                     dialogActionListener.onDelete(position)
                     dialog.dismiss()
                 }
-                optionShare.setOnClickListener{
+                optionShare.setOnClickListener {
                     dialogActionListener.onShare(position)
                     dialog.dismiss()
                 }

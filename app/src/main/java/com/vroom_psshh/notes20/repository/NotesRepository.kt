@@ -25,7 +25,7 @@ class NotesRepository(private val notesDatabase: NotesDatabase) {
     fun updateNotes(userInput: UserInput) {
         notesDatabase.notesDao().updateNotes(userInput)
     }
-    fun deleteNotes(userInput: List<UserInput>){
+    fun deleteNotes(userInput: UserInput){
         notesDatabase.notesDao().deleteNotes(userInput)
     }
 }

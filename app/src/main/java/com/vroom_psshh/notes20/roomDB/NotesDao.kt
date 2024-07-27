@@ -21,7 +21,7 @@ interface NotesDao {
     fun updateNotes(notes: UserInput)
 
     @Delete
-    fun deleteNotes(notes: List<UserInput>)
+    fun deleteNotes(notes: UserInput)
 
 //    @Query("SELECT COUNT(*) FROM notes")
 //    fun getEntryCount(): Int

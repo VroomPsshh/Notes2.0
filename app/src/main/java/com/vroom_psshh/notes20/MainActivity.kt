@@ -1,6 +1,6 @@
 package com.vroom_psshh.notes20
 
-import android.icu.text.CaseMap.Title
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vroom_psshh.notes20.databinding.ActivityMainBinding
+import com.vroom_psshh.notes20.roomDB.UserInput
 import com.vroom_psshh.notes20.viewmodels.DialogActionListener
 import com.vroom_psshh.notes20.viewmodels.MainViewModel
 import com.vroom_psshh.notes20.viewmodels.MainViewModelFactory
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
     private lateinit var userInputAdapter: UserInputAdapter
-    private  var userID: Int = 0
+    private var userID: Int = 0
     private lateinit var title: String
     private lateinit var userInput: String
 
@@ -45,23 +46,7 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
             MainViewModelFactory(repository)
         )[MainViewModel::class.java]
 
-
-        mainViewModel.notesLiveData.observe(this) { values ->
-            if (values != null) {
-                userInputAdapter.updateNotes(values)
-                val listSize = userInputAdapter.itemCount
-                if (listSize != 0) {
-                    Log.d("App Status", "Changes made in data.")
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Welcome!! You may start creating notes",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-
+        liveDataObserver()
 
         //RecyclerView, adapter and layout manager
         userInputAdapter = UserInputAdapter(this, emptyList(), this)
@@ -75,14 +60,29 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
         }
     }
 
-    private fun loadFragment( checkPoint: Int) {
+    private fun liveDataObserver() {
+        mainViewModel.notesLiveData.observe(this) { notes ->
+            notes?.let {
+                Log.d("2. Observer", "Observer has been invoked, LiveData Size = ${it.size}")
+                userInputAdapter.syncNotes(it)
+                val listSize = userInputAdapter.itemCount
+                Log.d("4. Observer", "Observer has been invoked, LiveData Size = ${it.size}, UserInputAdapterSize = $listSize")
+                if (listSize != 0) {
+                    //Toast.makeText(this, "Welcome Back!, size is ${it.size}", Toast.LENGTH_SHORT).show()
+                }
+                else Toast.makeText(this, "Welcome, you may start creating notes", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun loadFragment(checkPoint: Int) {
         val fm: FragmentManager = supportFragmentManager
         val ft: FragmentTransaction = fm.beginTransaction()
         if (checkPoint == 0) {
             ft.add(R.id.main, NotesAddingFrag())
             ft.addToBackStack("this")
             ft.commit()
-        } else{
+        } else {
             val frag = NotesAddingFrag()
             val bundle = Bundle()
             bundle.putInt("notesId", userID)
@@ -93,14 +93,12 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
             ft.addToBackStack("this")
             ft.commit()
         }
-
     }
 
     override fun onEdit(position: Int) {
-        Log.d("onEdit", "This is onEdit function, position of itemClicked is $position")
         mainViewModel.notesLiveData.observe(this) { values ->
-            if (values != null) {
-                val dataAtThisPosition = values[position]
+            values?.let {
+                val dataAtThisPosition = it[position]
                 userID = dataAtThisPosition.notesId
                 title = dataAtThisPosition.title
                 userInput = dataAtThisPosition.userInput
@@ -110,11 +108,29 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
     }
 
     override fun onDelete(position: Int) {
-        Log.d("onDelete", "This is onDelete function, position of itemClicked is $position")
+        val deleteNote = deleteNote(position)
+        mainViewModel.deleteNotes(deleteNote)
     }
 
     override fun onShare(position: Int) {
-        Log.d("onShare", "This is onShare function, position of itemClicked is $position")
+        mainViewModel.notesLiveData.observe(this) { values ->
+            values?.let {
+                val dataAtThisPosition = it[position]
+                userID = dataAtThisPosition.notesId
+                title = dataAtThisPosition.title
+                userInput = dataAtThisPosition.userInput
+            }
+        }
+        val shareData = Intent().apply {
+            this.action = Intent.ACTION_SEND
+            this.putExtra(Intent.EXTRA_TEXT, "Title = $title, Note = $userInput")
+            this.type = "text/plain"
+        }
+        startActivity(shareData)
+    }
 
+    private fun deleteNote(position: Int): UserInput {
+        val noteToDelete = userInputAdapter.getNotesAt(position)
+        return noteToDelete
     }
 }

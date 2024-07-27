@@ -20,5 +20,11 @@ class MainViewModel (private val repository: NotesRepository): ViewModel() {
             repository.updateNotes(userInput)
         }
     }
+
+    fun deleteNotes(deleteNote: UserInput){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.deleteNotes(deleteNote)
+        }
+    }
     val notesLiveData: LiveData<List<UserInput>> = repository.getNotes()
 }
