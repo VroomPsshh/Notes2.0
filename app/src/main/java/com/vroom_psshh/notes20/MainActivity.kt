@@ -63,10 +63,8 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
     private fun liveDataObserver() {
         mainViewModel.notesLiveData.observe(this) { notes ->
             notes?.let {
-                Log.d("2. Observer", "Observer has been invoked, LiveData Size = ${it.size}")
                 userInputAdapter.syncNotes(it)
                 val listSize = userInputAdapter.itemCount
-                Log.d("4. Observer", "Observer has been invoked, LiveData Size = ${it.size}, UserInputAdapterSize = $listSize")
                 if (listSize != 0) {
                     //Toast.makeText(this, "Welcome Back!, size is ${it.size}", Toast.LENGTH_SHORT).show()
                 }
@@ -107,9 +105,16 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
         }
     }
 
-    override fun onDelete(position: Int) {
-        val deleteNote = deleteNote(position)
-        mainViewModel.deleteNotes(deleteNote)
+    override fun onDelete(userInput: UserInput){
+        Log.d("Deleting note:", userInput.toString())
+        Log.d("Adapter size before delete:", userInputAdapter.entryList.size.toString())
+        mainViewModel.deleteNotes(userInput)
+        mainViewModel.notesLiveData.observe(this) { notes ->
+            userInputAdapter.syncNotes(notes)
+            userInputAdapter.syncNotes(notes)
+            Log.d("Notes after delete:", notes.toString())
+            Log.d("Adapter size after delete:", userInputAdapter.entryList.size.toString()) // Log after deleting
+        }
     }
 
     override fun onShare(position: Int) {
@@ -127,10 +132,5 @@ class MainActivity : AppCompatActivity(), DialogActionListener {
             this.type = "text/plain"
         }
         startActivity(shareData)
-    }
-
-    private fun deleteNote(position: Int): UserInput {
-        val noteToDelete = userInputAdapter.getNotesAt(position)
-        return noteToDelete
     }
 }

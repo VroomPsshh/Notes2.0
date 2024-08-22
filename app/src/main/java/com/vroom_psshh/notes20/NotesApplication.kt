@@ -16,6 +16,5 @@ class NotesApplication: Application() {
     private fun initialize() {
         val database = NotesDatabase.getDatabase(applicationContext)
         notesRepository = NotesRepository(database)
-
     }
 }

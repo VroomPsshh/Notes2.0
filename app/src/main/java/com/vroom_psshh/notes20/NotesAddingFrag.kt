@@ -61,7 +61,6 @@ class NotesAddingFrag : Fragment() {
                     newUserInput = binding.notes.text.toString().trim()
                     val userInput = UserInput(0, newTitle, newUserInput)
                     mainViewModel.addNotes(userInput)
-                    Log.d("1. Note Added", userInput.toString())
                     Toast.makeText(requireContext(), "Notes Saved Successfully!!", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -73,12 +72,14 @@ class NotesAddingFrag : Fragment() {
                 newUserInput = binding.notes.text.toString().trim()
                 if (title != newTitle || userInput != newUserInput) {
                     val userInput = notesClickedForUpdate.copy(
-                        notesId = notesId,
                         title = newTitle,
                         userInput = newUserInput
                     )
+                    Log.d("Updated note:", userInput.toString())
                     mainViewModel.updateNotes(userInput)
-                    Log.d("1. Edited Note Data", userInput.toString())
+                    mainViewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
+                        Log.d("Notes after update:", notes.toString())
+                    }
                     Toast.makeText(requireContext(), "Notes Updated!!", Toast.LENGTH_SHORT).show()
                 } else Toast.makeText(
                     requireContext(),

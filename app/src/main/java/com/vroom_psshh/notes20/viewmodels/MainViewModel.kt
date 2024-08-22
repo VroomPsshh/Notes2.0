@@ -1,5 +1,6 @@
 package com.vroom_psshh.notes20.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

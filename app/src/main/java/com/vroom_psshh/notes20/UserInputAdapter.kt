@@ -13,7 +13,7 @@ import com.vroom_psshh.notes20.viewmodels.DialogActionListener
 
 class UserInputAdapter(
     private val context: Context,
-    private var entryList: List<UserInput>,
+    var entryList: List<UserInput>,
     private val dialogActionListener: DialogActionListener
 ) :
     RecyclerView.Adapter<UserInputAdapter.ViewHolder>() {
@@ -34,12 +34,10 @@ class UserInputAdapter(
 
     fun syncNotes(notes: List<UserInput>) {
         this.entryList = notes
-        Log.d("3. UserInputAdapter", "SyncNotes Size = ${entryList.size}, New Data = $entryList")
         notifyDataSetChanged()
     }
 
     fun getNotesAt(position: Int): UserInput {
-        Log.d("DataToDelete", "${entryList[position]}")
         return entryList[position]
     }
 
@@ -61,7 +59,12 @@ class UserInputAdapter(
                     dialog.dismiss()
                 }
                 optionDelete.setOnClickListener {
-                    dialogActionListener.onDelete(position)
+                    val positionHere = adapterPosition // Get the position of the item
+                    Log.d("Position to delete:", positionHere.toString()) // Log the position
+                    if (positionHere != RecyclerView.NO_POSITION) { // Check for valid position
+                        val userInputHere = entryList[positionHere]
+                        dialogActionListener.onDelete(userInputHere)
+                    }
                     dialog.dismiss()
                 }
                 optionShare.setOnClickListener {
